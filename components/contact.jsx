@@ -17,11 +17,11 @@ export default function Contact() {
     message: "",
   })
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission here
-    console.log("Form submitted:", formData)
-  }
+const handleSubmit = (e) => {
+  e.preventDefault();
+  alert("Message sent! (demo mode — no email sending)");
+  setFormData({ name: "", email: "", message: "" });
+};
 
   const handleChange = (e) => {
     setFormData({
