@@ -2,15 +2,14 @@
 
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useState, useEffect } from "react"
-
-const navItems = [
-  { name: "About", href: "#about" },
-  { name: "Projects", href: "#projects" },
-  { name: "Contact", href: "#contact" },
-]
+import { useLanguage } from "../contexts/LanguageContext"
+import { Button } from "./ui/button"
+import { Moon, Sun, Globe } from "lucide-react"
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const { language, changeLanguage, t } = useLanguage()
+  const [theme, setTheme] = useState('light')
   const { scrollY } = useScroll()
   const backgroundColor = useTransform(scrollY, [0, 100], ["oklch(0.08 0.02 240 / 0)", "oklch(0.08 0.02 240 / 0.8)"])
 
@@ -20,6 +19,35 @@ export default function Navbar() {
     })
     return unsubscribe
   }, [scrollY])
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme) {
+      setTheme(savedTheme)
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark')
+    }
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    localStorage.setItem('theme', newTheme)
+    document.documentElement.classList.toggle('dark', newTheme === 'dark')
+  }
+
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'ar' : 'en'
+    changeLanguage(newLang)
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = newLang
+  }
+
+  const navItems = [
+    { name: t('about'), href: "#about" },
+    { name: language === 'ar' ? 'الخبرة' : "Experience", href: "#experience" },
+    { name: t('projects'), href: "#projects" },
+    { name: t('contact'), href: "#contact" },
+  ]
 
   return (
     <motion.nav
@@ -35,7 +63,7 @@ export default function Navbar() {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
-          Portfolio
+          {t('portfolio')}
         </motion.div>
 
         <div className="hidden md:flex items-center space-x-8">
@@ -60,18 +88,32 @@ export default function Navbar() {
           ))}
         </div>
 
-        <motion.div
-          className="w-6 h-6 rounded-full bg-primary glow-cyan"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.7, 1, 0.7],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-          }}
-        />
+        <div className="flex items-center gap-3">
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full hover:bg-primary/10"
+            >
+              {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </Button>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="rounded-full hover:bg-primary/10"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="ml-1 text-xs font-medium">
+                {language === 'en' ? 'AR' : 'EN'}
+              </span>
+            </Button>
+          </motion.div>
+        </div>
       </div>
     </motion.nav>
   )

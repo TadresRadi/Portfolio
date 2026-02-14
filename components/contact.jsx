@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useState } from "react"
+import { useLanguage } from "../contexts/LanguageContext"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
@@ -11,6 +12,7 @@ import { Mail, MapPin, Phone, Send } from "lucide-react"
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,7 +21,7 @@ export default function Contact() {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  alert("Message sent! (demo mode — no email sending)");
+  alert(t('sendMessage') + "! (demo mode — no email sending)");
   setFormData({ name: "", email: "", message: "" });
 };
 
@@ -56,19 +58,19 @@ const handleSubmit = (e) => {
   const contactInfo = [
     {
       icon: Mail,
-      title: "Email",
+      title: t('email'),
       value: "Tadrosradi@gmail.com",
       href: "mailto:tadrosradi@gmail.com",
     },
     {
       icon: Phone,
-      title: "Phone",
+      title: t('phone'),
       value: "+20 01550781860",
       href: "tel:01550781860",
     },
     {
       icon: MapPin,
-      title: "Location",
+      title: t('location'),
       value: "Egypt, Qena",
       href: "https://www.google.com/maps/@26.1594953,32.7257566,18z?entry=ttu&g_ep=EgoyMDI1MTIwMi4wIKXMDSoASAFQAw%3D%3D",
     },
@@ -84,9 +86,9 @@ const handleSubmit = (e) => {
           className="space-y-16"
         >
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">Let's Work Together</h2>
+            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">{t('letsWork')}</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty leading-relaxed">
-              Have a project in mind? I'd love to hear about it. Let's discuss how we can bring your ideas to life.
+              {t('contactDescription')}
             </p>
           </motion.div>
 
@@ -97,6 +99,8 @@ const handleSubmit = (e) => {
                   <motion.a
                     key={info.title}
                     href={info.href}
+                    target={info.title === "Location" ? "_blank" : undefined}
+                    rel={info.title === "Location" ? "noopener noreferrer" : undefined}
                     className="flex items-center gap-4 p-4 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 group"
                     whileHover={{ scale: 1.02, x: 10 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -125,7 +129,7 @@ const handleSubmit = (e) => {
                     >
                       <Input
                         name="name"
-                        placeholder="Your Name"
+                        placeholder={t('yourName')}
                         value={formData.name}
                         onChange={handleChange}
                         className="bg-background/50 border-border/50 focus:border-primary rounded-xl"
@@ -139,7 +143,7 @@ const handleSubmit = (e) => {
                       <Input
                         name="email"
                         type="email"
-                        placeholder="Your Email"
+                        placeholder={t('yourEmail')}
                         value={formData.email}
                         onChange={handleChange}
                         className="bg-background/50 border-border/50 focus:border-primary rounded-xl"
@@ -151,7 +155,7 @@ const handleSubmit = (e) => {
                   <motion.div whileFocus={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
                     <Textarea
                       name="message"
-                      placeholder="Your Message"
+                      placeholder={t('yourMessage')}
                       value={formData.message}
                       onChange={handleChange}
                       rows={6}
@@ -170,7 +174,7 @@ const handleSubmit = (e) => {
                       whileHover={{ x: 5 }}
                       transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     >
-                      Send Message
+                      {t('sendMessage')}
                       <Send className="w-4 h-4 ml-2" />
                     </motion.div>
                   </Button>

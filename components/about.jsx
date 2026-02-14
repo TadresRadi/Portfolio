@@ -2,39 +2,47 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
+import { useLanguage } from "../contexts/LanguageContext"
 import { Card } from "./ui/card"
 import { Code, Palette, Zap, Users } from "lucide-react"
-
-const skills = [
-  {
-    icon: Code,
-    title: "Frontend Development",
-    description: "React, Next.js, TypeScript, and modern web technologies",
-    color: "oklch(0.7 0.15 180)",
-  },
-  {
-    icon: Palette,
-    title: "UI/UX Design",
-    description: "Creating beautiful, Figma, intuitive user interfaces and experiences",
-    color: "oklch(0.65 0.18 280)",
-  },
-  {
-    icon: Zap,
-    title: "Performance",
-    description: "Optimizing applications for speed and accessibility",
-    color: "oklch(0.75 0.14 200)",
-  },
-  {
-    icon: Users,
-    title: "Collaboration",
-    description: "Working effectively with teams and stakeholders",
-    color: "oklch(0.68 0.16 160)",
-  },
-]
 
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const { t, language } = useLanguage()
+
+  const skills = [
+    {
+      icon: Code,
+      title: t('frontend'),
+      description: t('frontendDesc'),
+      color: "oklch(0.7 0.15 180)",
+    },
+    {
+      icon: Code,
+      title: language === 'ar' ? 'تطوير الواجهات الخلفية' : "Backend Development",
+      description: language === 'ar' ? 'Python, Django, Odoo, RESTful APIs, بناء الأنظمة الخلفية القوية' : "Python, Django, Odoo, RESTful APIs, building robust backend systems",
+      color: "oklch(0.65 0.18 280)",
+    },
+    {
+      icon: Palette,
+      title: t('uiux'),
+      description: t('uiuxDesc'),
+      color: "oklch(0.75 0.14 200)",
+    },
+    {
+      icon: Zap,
+      title: t('performance'),
+      description: t('performanceDesc'),
+      color: "oklch(0.68 0.16 160)",
+    },
+    {
+      icon: Users,
+      title: t('collaboration'),
+      description: t('collaborationDesc'),
+      color: "oklch(0.7 0.15 180)",
+    },
+  ]
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,11 +77,9 @@ export default function About() {
           className="space-y-16"
         >
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">About Me</h2>
+            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">{t('aboutMe')}</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty leading-relaxed">
-              I'm a passionate developer who loves creating digital experiences that make a difference. With expertise
-              in modern web technologies and a keen eye for design, I bring ideas to life through clean code and
-              thoughtful user interfaces.
+              {t('aboutDescription')}
             </p>
           </motion.div>
 

@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
+import { useLanguage } from "../contexts/LanguageContext"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { ExternalLink, Github } from "lucide-react"
@@ -14,14 +15,16 @@ const projects = [
     image: "/modern-booking-interface.png",
     tech: ["React", "TypeScript", "Python", "Django", "PostgreSQL"],
     github: "https://github.com/TadresRadi/Diva-Booking-Website",
+    metrics: ["40% ↓ Latency", "50% ↓ Tokens"],
   },
   {
-    title: "Task Management App",
+    title: "Elbatal Art Live Website",
     description:
-      "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
-    image: "/task-management-dashboard.png",
-    tech: ["React", "Node.js", "Socket.io", "MongoDB"],
-    github: "#",
+      "A dynamic art portfolio website for Elbatal Art, featuring gallery showcases, artist profiles, exhibition schedules, and seamless user experience for art enthusiasts and collectors.",
+    image: "/Elbatal-Art.png",
+    tech: ["React", "Next.js", "TypeScript", "Python", "Django"],
+    github: "https://github.com/TadresRadi/Elbatal-Art-Live-Website",
+    metrics: ["65% ↑ Engagement", "30% ↓ Bounce Rate"],
   },
   {
     title: "Tech Platform",
@@ -29,7 +32,8 @@ const projects = [
       "A modern tech platform called RA, delivering scalable infrastructure, smart automation, and real-time analytics to power efficient, data-driven operations.",
     image: "/ai-content-generator-interface.png",
     tech: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
-    github: "#",
+    github: "https://github.com/TadresRadi/Ra-Tech",
+    metrics: ["99.9% Uptime", "2s Load Time"],
   },
   {
     title: "Portfolio Website",
@@ -38,12 +42,14 @@ const projects = [
     image: "/creative-portfolio-website.png",
     tech: ["Next.js", "Framer Motion", "Tailwind CSS"],
     github: "#",
+    metrics: ["A+ Performance", "100% Responsive"],
   },
 ]
 
 export default function Projects() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -75,71 +81,107 @@ export default function Projects() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="space-y-16"
+          className="space-y-20"
         >
-          <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">Featured Projects</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty leading-relaxed">
-              A collection of projects that showcase my skills in web development, design, and problem-solving. Each
-              project represents a unique challenge and learning experience.
+          {/* Section Header */}
+          <motion.div variants={itemVariants} className="text-center space-y-4">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter">
+              {t('featuredProjects').split(' ').map((word, i) => (
+                <span key={i} className="block">{word.toUpperCase()}</span>
+              ))}
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              {t('projectsDescription')}
             </p>
           </motion.div>
 
-          <motion.div variants={containerVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Projects Grid */}
+          <motion.div variants={containerVariants} className="space-y-16">
             {projects.map((project, index) => (
               <motion.div
                 key={project.title}
                 variants={itemVariants}
-                whileHover={{ y: -10 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="border-b border-border pb-16 last:border-0"
               >
-                <Card className="overflow-hidden bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all duration-500 rounded-2xl group">
-                  <div className="relative overflow-hidden">
-                    <motion.img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-64 object-cover"
-                      whileHover={{ scale: 1.05 }}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                  {/* Project Image */}
+                  <div className={`order-2 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
+                    <motion.div
+                      className="relative overflow-hidden rounded-lg bg-muted"
+                      whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    >
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-64 lg:h-80 object-cover"
+                      />
+                    </motion.div>
                   </div>
 
-                  <div className="p-8">
-                    <h3 className="text-2xl font-semibold mb-3 group-hover:text-primary transition-colors duration-300">
-                      {project.title}
-                    </h3>
+                  {/* Project Content */}
+                  <div className={`order-1 ${index % 2 === 1 ? 'lg:order-2' : 'lg:order-1'} space-y-6`}>
+                    <div className="space-y-4">
+                      <h3 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tighter text-foreground">
+                        {project.title}
+                      </h3>
+                      
+                      <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                        {project.description}
+                      </p>
 
-                    <p className="text-muted-foreground mb-6 leading-relaxed">{project.description}</p>
+                      {/* Metrics */}
+                      {project.metrics && (
+                        <div className="flex flex-wrap gap-3">
+                          {project.metrics.map((metric, i) => (
+                            <span
+                              key={i}
+                              className="text-sm font-medium text-foreground bg-muted px-3 py-1 rounded"
+                            >
+                              {metric}
+                            </span>
+                          ))}
+                        </div>
+                      )}
 
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tech.map((tech) => (
-                        <motion.span
-                          key={tech}
-                          className="px-3 py-1 text-sm bg-primary/10 text-primary rounded-full border border-primary/20"
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      {/* Tech Stack */}
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map((tech) => (
+                          <span
+                            key={tech}
+                            className="text-xs font-medium text-muted-foreground border border-border px-2 py-1 rounded"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="pt-4">
+                      {project.github !== "#" && (
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="border-foreground text-foreground hover:bg-foreground hover:text-background px-6 py-3 rounded-none text-sm font-medium tracking-wide transition-all duration-300"
+                          asChild
                         >
-                          {tech}
-                        </motion.span>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-xl border-primary/30 hover:bg-primary/10 bg-transparent"
-                        asChild
-                      >
-                        <motion.a href={project.github} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                          <Github className="w-4 h-4 mr-2" />
-                          Code
-                        </motion.a>
-                      </Button>
+                          <motion.a
+                            href={project.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          >
+                            <Github className="w-4 h-4 mr-2" />
+                            {t('code').toUpperCase()}
+                          </motion.a>
+                        </Button>
+                      )}
                     </div>
                   </div>
-                </Card>
+                </div>
               </motion.div>
             ))}
           </motion.div>
